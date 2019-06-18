@@ -2,8 +2,9 @@
 
 // For use by Engine appliaction
 
-#include "Engine\Application.h"
+#include "Engine/Application.h"
+#include "Engine/Log.h"
 
 // ------------Entry Point------------
-#include "Engine\EntryPoint.h"
+#include "Engine/EntryPoint.h"
 // -----------------------------------
