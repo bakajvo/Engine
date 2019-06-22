@@ -9,6 +9,11 @@ workspace "Engine"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "Engine/vendor/GLFW/include"
+
+include "Engine/vendor/GLFW"
+
 project "Engine"
     location "Engine"
     kind "SharedLib"
@@ -17,6 +22,9 @@ project "Engine"
     targetdir ("bin/"..outputdir.."/%{prj.name}")
     objdir ("bin-int/"..outputdir.."/%{prj.name}")
 
+	pchheader "engpch.h"
+	pchsource "Engine/src/engpch.cpp"
+
     files {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp"
@@ -24,8 +32,14 @@ project "Engine"
 
     includedirs {
         "%{prj.name}/src",
-        "%{prj.name}/vendor/spdlog/include"
+        "%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
     }
+
+	links {
+		"GLFW",
+		"opengl32.lib"
+	}
 
     filter "system:windows"
         cppdialect "C++17"
@@ -43,14 +57,17 @@ project "Engine"
     
     filter "configurations:Debug"
         defines "ENG_DEBUG"
+		buildoptions "/MDd"
         symbols "On"
 
     filter "configurations:Release"
         defines "ENG_RELEASE"
+		buildoptions "/MD"
         optimize "On"
     
     filter "configurations:Dist"
         defines "ENG_DIST"
+		buildoptions "/MD"
         optimize "On"
 
 project "Sandbox"
@@ -86,12 +103,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "ENG_DEBUG"
+		buildoptions "/MDd"
         symbols "On"
 
     filter "configurations:Release"
         defines "ENG_RELEASE"
+		buildoptions "/MD"
         optimize "On"
 
     filter "configurations:Dist"
         defines "ENG_DIST"
+		buildoptions "/MD"
         optimize "On"

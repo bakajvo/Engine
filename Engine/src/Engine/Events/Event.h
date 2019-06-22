@@ -1,10 +1,7 @@
 #pragma once
 
+#include "engpch.h"
 #include "Engine/Core.h"
-
-#include <string>
-#include <sstream>
-#include <functional>
 
 namespace Engine {
 
