@@ -1,5 +1,6 @@
 workspace "Engine"
     architecture "x64"
+	startproject "Sandbox"
 
     configurations {
         "Debug",
@@ -14,14 +15,19 @@ IncludeDir["GLFW"] = "Engine/vendor/GLFW/include"
 IncludeDir["Glad"] = "Engine/vendor/Glad/include"
 IncludeDir["ImGui"] = "Engine/vendor/imgui"
 
-include "Engine/vendor/GLFW"
-include "Engine/vendor/Glad"
-include "Engine/vendor/imgui"
+group "Dependencies"
+	include "Engine/vendor/GLFW"
+	include "Engine/vendor/Glad"
+	include "Engine/vendor/imgui"
+
+group ""
 
 project "Engine"
     location "Engine"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
+	cppdialect "C++17"
+    staticruntime "On"
 
     targetdir ("bin/"..outputdir.."/%{prj.name}")
     objdir ("bin-int/"..outputdir.."/%{prj.name}")
@@ -50,8 +56,6 @@ project "Engine"
 	}
 
     filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         defines {
@@ -61,28 +65,30 @@ project "Engine"
         }
 
         postbuildcommands {
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/"..outputdir.."/Sandbox")
+            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
         }
     
     filter "configurations:Debug"
         defines "ENG_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "ENG_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
         optimize "On"
     
     filter "configurations:Dist"
         defines "ENG_DIST"
-		buildoptions "/MD"
+		runtime "Release"
         optimize "On"
 
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
     targetdir ("bin/"..outputdir.."/%{prj.name}")
     objdir ("bin-int/"..outputdir.."/%{prj.name}")
@@ -112,15 +118,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "ENG_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "ENG_RELEASE"
-		buildoptions "/MD"
+		runtime "Release"
         optimize "On"
 
     filter "configurations:Dist"
         defines "ENG_DIST"
-		buildoptions "/MD"
+		runtime "Release"
         optimize "On"
